@@ -1,3 +1,11 @@
+GIT
+  remote: git://github.com/sandboxws/omniauth-goodreads
+  revision: b220d902f23e16072f6e04b05c0a337c77a971bf
+  specs:
+    omniauth-goodreads (1.0.0)
+      multi_xml (~> 0.5.5)
+      omniauth-oauth (~> 1.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -92,12 +100,17 @@ GEM
     mini_portile2 (2.2.0)
     minitest (5.10.3)
     multi_json (1.12.1)
+    multi_xml (0.5.5)
     nio4r (2.1.0)
     nokogiri (1.8.0)
       mini_portile2 (~> 2.2.0)
+    oauth (0.5.3)
     omniauth (1.6.1)
       hashie (>= 3.4.6, < 3.6.0)
       rack (>= 1.6.2, < 3)
+    omniauth-oauth (1.1.0)
+      oauth
+      omniauth (~> 1.0)
     orm_adapter (0.5.0)
     pg (0.21.0)
     puma (3.10.0)
@@ -213,6 +226,7 @@ DEPENDENCIES
   jbuilder (~> 2.5)
   listen (>= 3.0.5, < 3.2)
   omniauth
+  omniauth-goodreads!
   pg (~> 0.18)
   puma (~> 3.7)
   rails (~> 5.1.3)
