@@ -33,6 +33,8 @@ gem 'devise', git: 'git://github.com/plataformatec/devise'
 gem 'omniauth'
 gem 'omniauth-goodreads', git: 'git://github.com/sandboxws/omniauth-goodreads'
 gem 'dotenv'
+gem 'rest-client'
+gem 'json'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
