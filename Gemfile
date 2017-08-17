@@ -29,6 +29,10 @@ gem 'jbuilder', '~> 2.5'
 # gem 'redis', '~> 3.0'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
+gem 'devise', git: 'git://github.com/plataformatec/devise'
+gem 'omniauth'
+gem 'omniauth-goodreads', git: 'git://github.com/sandboxws/omniauth-goodreads'
+gem 'dotenv'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
@@ -41,6 +45,7 @@ group :development, :test do
   gem 'faker'
   gem 'factory_girl_rails'
   gem 'database_cleaner'
+  gem 'shoulda-matchers'
 end
 
 group :development do
