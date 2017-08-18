@@ -34,6 +34,7 @@ gem 'omniauth'
 gem 'omniauth-goodreads', git: 'git://github.com/sandboxws/omniauth-goodreads'
 gem 'dotenv'
 gem 'rest-client'
+gem 'awesome_print'
 gem 'json'
 
 # Use Capistrano for deployment
