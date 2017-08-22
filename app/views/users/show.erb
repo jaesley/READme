@@ -1,5 +1,10 @@
-<div class='author-names'>
+<div>
   <% @user.authors.each do |author| %>
-    <br /><%= author.name %>
+    <div>
+      <strong><%= author.name %></strong><br />
+      <% author.books.each do |book| %>
+        <em><%= book.title %> (<%= book.publication_date %>)</em><br />
+      <% end %>
+    </div>
   <% end %>
 </div>
