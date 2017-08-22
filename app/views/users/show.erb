@@ -1,3 +1,5 @@
-<pre>
-  <%= @authors %>
-</pre>
+<div class='author-names'>
+  <% @user.authors.each do |author| %>
+    <br /><%= author.name %>
+  <% end %>
+</div>
