@@ -36,6 +36,6 @@ class UsersController < ApplicationController
         end
       end
     end
-    @user = current_user
+    @user = User.find(params[:id]
   end
 end
