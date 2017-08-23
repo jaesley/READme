@@ -36,6 +36,6 @@ class UsersController < ApplicationController
         end
       end
     end
-    @user = User.find(params[:id]
+    @user = User.find(params[:id])
   end
 end
