@@ -1,8 +1,10 @@
 module ApplicationHelper
   def generate_records(current_user)
     @current_user = current_user
-    authors = generate_authors
-    authors.each do |author|
+    @author_hashes = []
+    @authors = generate_authors
+    p @authors
+    @authors.each do |author|
       generate_books(author)
     end
   end
@@ -10,12 +12,28 @@ module ApplicationHelper
   private
 
   def generate_authors
-    authors_request = RestClient.get "http://www.goodreads.com/review/list/#{@current_user.uid}?key=#{ENV['GOODREADS_API_KEY']}&v=2&sort=author&per_page=200&shelf=read"
-    authors = generate_author_hashes(Hash.from_xml(authors_request))
-    authors.each do |author|
+    page = 1
+    body = generate_authors_page(page)
+    total = body['GoodreadsResponse']['reviews']['total'].to_i
+    while total > 200
+      page += 1
+      total -= 200
+      generate_authors_page(page)
+    end
+
+    p @author_hashes
+
+    @author_hashes.each do |author|
       generate_author(author)
     end
+
     @current_user.authors
+  end
+
+  def generate_authors_page(page)
+    authors_request = RestClient.get "http://www.goodreads.com/review/list/#{@current_user.uid}?key=#{ENV['GOODREADS_API_KEY']}&v=2&sort=author&per_page=200&shelf=read"
+    generate_author_hashes(Hash.from_xml(authors_request))
+    Hash.from_xml(authors_request)
   end
 
   def generate_author(author)
@@ -31,12 +49,11 @@ module ApplicationHelper
   end
 
   def generate_author_hashes(body)
-    authors = []
     body['GoodreadsResponse']['reviews']['review'].each do |review|
       author = generate_author_hash(review)
-      authors << author
+      @author_hashes << author
     end
-    authors.uniq
+    @author_hashes
   end
 
   def generate_author_hash(review)
@@ -46,8 +63,20 @@ module ApplicationHelper
   end
 
   def generate_books(author)
-    books_request = RestClient.get "http://www.goodreads.com/author/list/#{author.goodreads_id}?key=#{ENV['GOODREADS_API_KEY']}&v=2&per_page=200"
+    page = 1
+    body = generate_books_page(author, page)
+    total = body['GoodreadsResponse']['author']['books']['total'].to_i
+    while total > 200
+      page += 1
+      total -= 200
+      generate_books_page(author, page)
+    end
+  end
+
+  def generate_books_page(author, page)
+    books_request = RestClient.get "http://www.goodreads.com/author/list/#{author.goodreads_id}?key=#{ENV['GOODREADS_API_KEY']}&v=2&per_page=200&page=#{page}"
     generate_book_hashes(author.id, Hash.from_xml(books_request))
+    Hash.from_xml(books_request)
   end
 
   def generate_book_hashes(author_id, books)
