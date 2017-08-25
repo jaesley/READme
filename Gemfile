@@ -36,6 +36,7 @@ gem 'dotenv'
 gem 'rest-client'
 gem 'awesome_print'
 gem 'json'
+gem 'jquery-rails'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
