@@ -3,7 +3,6 @@ module ApplicationHelper
     @current_user = current_user
     @author_hashes = []
     @authors = generate_authors
-    p @authors
     @authors.each do |author|
       generate_books(author)
     end
@@ -20,9 +19,7 @@ module ApplicationHelper
       total -= 200
       generate_authors_page(page)
     end
-
-    p @author_hashes
-
+    
     @author_hashes.each do |author|
       generate_author(author)
     end
