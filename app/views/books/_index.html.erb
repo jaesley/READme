@@ -1,6 +1,6 @@
 <div>
   <% books = current_user.books.sort_by { |book| book.publication_date } %>
   <% books.each do |book| %>
-    <em><%= book.title %> (<%= book.author.name %>; <%= book.publication_date %>)</em><br />
+    <em><%= book.title %></em> (<%= book.author.name %>; <%= book.publication_date %>)<br />
   <% end %>
 </div>

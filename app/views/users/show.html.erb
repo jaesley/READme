@@ -1,3 +1,18 @@
-Welcome to READme
+<div>
+
+</div>Welcome to READme
+
+<script type='text/javascript'>
+  $.ajax({
+    url: '/books',
+    method: 'post',
+  }).done(function(data) {
+    $('.loading').text('Results loaded.')
+  })
+</script>
+
+<div class='loading'>
+  Please wait while we load your releases.
+</div>
 
 <%= render 'books/index' %>
