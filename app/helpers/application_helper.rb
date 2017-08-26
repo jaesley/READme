@@ -34,7 +34,7 @@ module ApplicationHelper
   end
 
   def generate_author(author)
-    Author.where(goodreads_id: author[:goodreads_id]).first_or_create.update_attributes(name: author[:name])
+    Author.where(goodreads_id: author[:goodreads_id]).first_or_create.update_attributes(name: author[:name], link: author[:link])
     generate_follow(Author.find_by(goodreads_id: author[:goodreads_id]))
   end
 
@@ -55,8 +55,9 @@ module ApplicationHelper
 
   def generate_author_hash(review)
     name = review['book']['authors']['author']['name']
+    link = review['book']['authors']['author']['link']
     goodreads_id = review['book']['authors']['author']['id']
-    {name: name, goodreads_id: goodreads_id}
+    {name: name, goodreads_id: goodreads_id, link: link}
   end
 
   def generate_books(author)
@@ -104,6 +105,6 @@ module ApplicationHelper
   end
 
   def generate_book(book)
-    Book.where(goodreads_id: book[:goodreads_id]).first_or_create.update_attributes(title: book[:title], isbn: book[:isbn], publication_date: book[:publication_date], author_id: book[:author_id])
+    Book.where(goodreads_id: book[:goodreads_id]).first_or_create.update_attributes(title: book[:title], isbn: book[:isbn], publication_date: book[:publication_date], author_id: book[:author_id], link: book[:link])
   end
 end
