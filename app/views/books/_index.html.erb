@@ -10,7 +10,7 @@
 <% publication_dates = publication_dates.uniq.sort %>
 
 <div class='releases'>
-  <% release_dates.each do |date| %>
+  <% publication_dates.each do |date| %>
     <div class='release-date'>
       <div class='date'><%= date.strftime('%B %e, %Y')%></div>
       <div class='books'>
