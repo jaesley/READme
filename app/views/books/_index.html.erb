@@ -7,7 +7,7 @@
     <div class='release-date'>
       <div class='date'><%= date.strftime('%B %e, %Y')%></div>
       <div class='books'>
-        <% books = current_user.books.select { |book| book.release_date == date } %>
+        <% books = current_user.books.select { |book| book.publication_date == date } %>
         <% books.each do |book| %>
           <div class='book'>
             <div class='title'><%= book.title %></div>
