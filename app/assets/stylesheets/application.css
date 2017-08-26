@@ -13,3 +13,37 @@
  *= require_tree .
  *= require_self
  */
+
+body {
+  font-family: sans-serif;
+}
+
+.releases {
+  padding: 5px;
+  width: 80%;
+  margin: 0 auto;
+}
+
+.release-date {
+  padding: 5px;
+  width: 80%;
+  margin: 0 auto;
+}
+
+.date {
+  padding: 5px;
+  background-color: gold;
+  font-size: x-large;
+}
+
+.book {
+  padding: 5px;
+  width: 90%;
+  margin: 0 auto;
+}
+
+.title {
+  padding: 5px;
+  font-style: italic;
+  font-size: larger;
+}

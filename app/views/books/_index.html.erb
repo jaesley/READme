@@ -4,3 +4,24 @@
     <em><%= book.title %></em> (<%= book.author.name %>; <%= book.publication_date %>)<br />
   <% end %>
 </div>
+
+<% publication_dates = [] %>
+<% current_user.books.each { |book| publication_dates << book.publication_date } %>
+<% publication_dates = publication_dates.uniq.sort %>
+
+<div class='releases'>
+  <% release_dates.each do |date| %>
+    <div class='release-date'>
+      <div class='date'><%= date.strftime('%B %e, %Y')%></div>
+      <div class='books'>
+        <% releases = upcoming_releases.select { |book| book.release_date == date } %>
+        <% releases.each do |book| %>
+          <div class='book'>
+            <div class='title'><%= book.title %></div>
+            <div class='author'><%= book.author %></div>
+          </div>
+        <% end %>
+      </div>
+      </div>
+  <% end %>
+</div>
