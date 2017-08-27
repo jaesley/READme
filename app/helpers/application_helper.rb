@@ -93,8 +93,7 @@ module ApplicationHelper
     if Date.parse(pub_date) >= Date.today
       title = book['title_without_series']
       goodreads_id = book['id']
-      link = book['link']['link']
-      p book['link']
+      link = book['link']
       p link
       p "*" * 1000
       isbn = get_isbn(book)
