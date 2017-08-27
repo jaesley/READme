@@ -8,6 +8,7 @@
       <div class='date'><%= date.strftime('%B %e, %Y')%></div>
       <div class='books'>
         <% books = current_user.books.select { |book| book.publication_date == date } %>
+        <% books = books.sort_by { |book| book.author.name.split(' ').last } %>
         <% books.each do |book| %>
           <div class='book'>
             <div class='title'><%= link_to book.title, book.link %></div>
