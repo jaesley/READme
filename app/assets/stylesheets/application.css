@@ -31,6 +31,7 @@ body {
 }
 
 .date {
+  border-radius: 5px;
   padding: 5px;
   background-color: gold;
   font-size: x-large;
