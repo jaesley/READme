@@ -94,6 +94,9 @@ module ApplicationHelper
       title = book['title_without_series']
       goodreads_id = book['id']
       link = book['link']
+      p book
+      p book['link']
+      p "*" * 1000
       isbn = get_isbn(book)
 
       {title: title, goodreads_id: goodreads_id, isbn: isbn, author_id: author_id, link: link, publication_date: pub_date}
