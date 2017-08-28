@@ -1,0 +1,33 @@
+$hero-height: 80vh;
+
+.hero {
+  $large-screen: 50em !default;
+  align-items: center;
+  background: url("hero.jpg") 50% no-repeat;
+  background-position: right;
+  background-size: 100%;
+  height: $hero-height;
+  display: flex;
+  justify-content: center;
+  min-height: 25em;
+  margin: 0 auto;
+
+  // @include media($large-screen) {
+  //   background-position: left;
+  //   background-size: cover;
+  //   justify-content: flex-end;
+  // }
+
+  .hero-content {
+    max-width: 20em;
+    text-align: center;
+
+    // @include media($large-screen) {
+    //   text-align: left;
+    // }
+  }
+
+  .hero-logo {
+    margin: auto;
+  }
+}
