@@ -10,10 +10,7 @@
         <% books = current_user.books.select { |book| book.publication_date == date } %>
         <% books = books.sort_by { |book| book.author.name.split(' ').last } %>
         <% books.each do |book| %>
-          <div class='book'>
-            <div class='title'><%= link_to book.title, book.link %></div>
-            <div class='author'><%= link_to book.author.name, book.author.link %></div>
-          </div>
+          <%= render partial: 'books/show', locals: { book: book } %>
         <% end %>
       </div>
       </div>

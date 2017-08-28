@@ -21,7 +21,12 @@
 
 body {
   font-family: sans-serif;
+  color: transparentize(#000, 0.25);
   margin: 0 auto;
+}
+
+a {
+  color: transparentize(#111, 0.25);
 }
 
 .releases {
