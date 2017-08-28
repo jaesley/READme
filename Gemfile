@@ -38,6 +38,10 @@ gem 'awesome_print'
 gem 'json'
 gem 'jquery-rails'
 
+gem 'bourbon'
+gem 'neat', '~> 1.8'
+gem 'bitters'
+
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 

@@ -1,11 +1,11 @@
-$hero-height: 80vh;
+$hero-height: 60vh;
 
 .hero {
   $large-screen: 50em !default;
   align-items: center;
   background: url("hero.jpg") 50% no-repeat;
-  background-position: right;
-  background-size: 100%;
+  background-position: center;
+  background-size: cover;
   height: $hero-height;
   display: flex;
   justify-content: center;
@@ -21,6 +21,13 @@ $hero-height: 80vh;
   .hero-content {
     max-width: 20em;
     text-align: center;
+    font-size: 3em;
+    color: white;
+    text-shadow:
+      -1px -1px 0 #999,
+      1px -1px 0 #999,
+      -1px 1px 0 #999,
+      1px 1px 0 #999;
 
     // @include media($large-screen) {
     //   text-align: left;
