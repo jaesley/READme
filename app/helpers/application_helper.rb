@@ -19,7 +19,7 @@ module ApplicationHelper
       total -= 200
       generate_authors_page(page)
     end
-    
+
     @author_hashes.each do |author|
       generate_author(author)
     end
@@ -94,8 +94,7 @@ module ApplicationHelper
       title = book['title_without_series']
       goodreads_id = book['id']
       link = book['link']
-      p link
-      p "*" * 1000
+      
       isbn = get_isbn(book)
 
       {title: title, goodreads_id: goodreads_id, isbn: isbn, author_id: author_id, link: link, publication_date: pub_date}

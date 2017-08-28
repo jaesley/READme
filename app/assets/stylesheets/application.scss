@@ -1,3 +1,9 @@
+@import 'bourbon';
+@import 'neat';
+// @import 'base/base';
+@import 'hero';
+@import 'nav';
+
 /*
  * This is a manifest file that'll be compiled into application.css, which will include all the files
  * listed below.
@@ -10,12 +16,17 @@
  * files in this directory. Styles in this file should be added after the last require_* statement.
  * It is generally better to create a new file per style scope.
  *
- *= require_tree .
  *= require_self
  */
 
 body {
   font-family: sans-serif;
+  color: transparentize(#000, 0.25);
+  margin: 0 auto;
+}
+
+a {
+  color: transparentize(#111, 0.25);
 }
 
 .releases {
@@ -33,7 +44,7 @@ body {
 .date {
   border-radius: 5px;
   padding: 5px;
-  background-color: gold;
+  background-color: lightblue;
   font-size: x-large;
 }
 
