@@ -8,7 +8,7 @@ module ApplicationHelper
     end
   end
 
-  private
+  # private
 
   def generate_authors
     page = 1
@@ -34,7 +34,7 @@ module ApplicationHelper
   end
 
   def generate_author(author)
-    Author.where(goodreads_id: author[:goodreads_id]).first_or_create.update_attributes(name: author[:name], link: author[:link])
+    Author.where(goodreads_id: author[:goodreads_id]).first_or_initialize.update_attributes(name: author[:name], link: author[:link])
     generate_follow(Author.find_by(goodreads_id: author[:goodreads_id]))
   end
 
@@ -94,7 +94,7 @@ module ApplicationHelper
       title = book['title_without_series']
       goodreads_id = book['id']
       link = book['link']
-      
+
       isbn = get_isbn(book)
 
       {title: title, goodreads_id: goodreads_id, isbn: isbn, author_id: author_id, link: link, publication_date: pub_date}
@@ -106,6 +106,13 @@ module ApplicationHelper
   end
 
   def generate_book(book)
-    Book.where(goodreads_id: book[:goodreads_id]).first_or_create.update_attributes(title: book[:title], isbn: book[:isbn], publication_date: book[:publication_date], author_id: book[:author_id], link: book[:link])
+    book_obj = Book.where(goodreads_id: book[:goodreads_id]).first_or_initialize
+    book_obj.update_attributes(book)
+    if book_obj.save
+      ActionCable.server.broadcast 'books_channel',
+        title: book_obj.title,
+        author: book_obj.author.name
+      # head :ok
+    end
   end
 end

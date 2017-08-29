@@ -1,14 +1,9 @@
-<script type='text/javascript'>
-  $.ajax({
-    url: '/books',
-    method: 'post',
-  }).done(function(data) {
-    $('.loading').text('Results loaded.')
-  })
-</script>
 
-<%= render 'books/index' %>
 
 <div class='loading'>
   Please wait while we load your releases.
+</div>
+
+<div class="releases">
+  <%= render 'books/index' %>
 </div>
