@@ -1,24 +1,36 @@
-# README
+# [README](http://read-me.herokuapp.com)
+## mission
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Find me more books to buy.
 
-Things you may want to cover:
+No, really.
 
-* Ruby version
+I *definitely* need more books.
 
-* System dependencies
+You probably need more, too. You should try it.
 
-* Configuration
+## usage
 
-* Database creation
+* Log in with your Github account.
+* Find new books.
+* Squeeeeeee.
+* Buy said books.
 
-* Database initialization
+## known issues
 
-* How to run the test suite
+* It's painfully slow.
+    * Use Typhoeus to run API requests in parallel.
+    * Use ActionCable and Javascript to forward database updates to front end in real-time.
 
-* Services (job queues, cache servers, search engines, etc.)
+* No support for works with multiple authors.
+   * Update database schema to add many-to-many relationship between author and work.
 
-* Deployment instructions
+## stretch ideas
 
-* ...
+* Add ability for user to unfollow an author they're not interested in.
+* Add support for works with future release date that's missing some info, such as specific day.
+* Add color-coding based on author's average rating to indicate if user will probably enjoy new release.
+* Add Amazon purchase links.
+* Add support for ordering works by author rather than by date.
+* Add ability for user to follow an author they're interested in but may not have read before.
+* Add support for tracking series info and recommending the next book in series, even if that book is previously released.
