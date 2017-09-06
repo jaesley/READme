@@ -11,7 +11,7 @@ You probably need more, too. You should try it.
 
 ## usage
 
-* Log in with your Github account.
+* Log in with your Goodreads account.
 * Find new books.
 * Squeeeeeee.
 * Buy said books.
