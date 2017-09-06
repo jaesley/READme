@@ -26,18 +26,25 @@ gem 'coffee-rails', '~> 4.2'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.5'
 # Use Redis adapter to run Action Cable in production
-# gem 'redis', '~> 3.0'
+gem 'redis', '~> 3.0'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 gem 'devise', git: 'git://github.com/plataformatec/devise'
+
+# OAuth and environment variables
 gem 'omniauth'
 gem 'omniauth-goodreads', git: 'git://github.com/sandboxws/omniauth-goodreads'
 gem 'dotenv'
+
+# HTTP requests
+gem 'typhoeus'
 gem 'rest-client'
+
 gem 'awesome_print'
 gem 'json'
 gem 'jquery-rails'
 
+# CSS assistance
 gem 'bourbon'
 gem 'neat', '~> 1.8'
 gem 'bitters'
