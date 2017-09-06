@@ -18,6 +18,10 @@ You probably need more, too. You should try it.
 
 ## known issues
 
+* Organization and test structure need work.
+    * Move 'helper' methods to models where they belong.
+    * Add tests for all those methods!!
+
 * It's painfully slow.
     * Use Typhoeus to run API requests in parallel.
     * Use ActionCable and Javascript to forward database updates to front end in real-time.
