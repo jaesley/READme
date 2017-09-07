@@ -40,11 +40,6 @@ class User < ApplicationRecord
 
   # private
 
-  def create_authors
-    author_hashes = get_author_all_pages
-    pp author_hashes
-  end
-
   def get_author_single_page(page_number)
     reviews = RestClient.get "http://www.goodreads.com/review/list/#{uid}?key=#{ENV['GOODREADS_API_KEY']}&sort=author&per_page=200&shelf=read"
     reviews = Hash.from_xml(reviews.to_s)
@@ -68,9 +63,17 @@ class User < ApplicationRecord
     author_hashes
   end
 
+
+
+
+
+
+
+
   def generate_author_hashes(body)
     body['GoodreadsResponse']['reviews']['review'].each do |review|
-      author = generate_author_hash(review)
+      # author = generate_author_hash(review)
+      author = {}
       author_hashes << author
     end
     author_hashes
@@ -88,6 +91,10 @@ class User < ApplicationRecord
 
 
 
+  def create_authors
+    author_hashes = get_author_all_pages
+    pp author_hashes
+  end
 
 
 

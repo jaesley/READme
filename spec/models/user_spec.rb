@@ -9,7 +9,25 @@ RSpec.describe User, type: :model do
     it { is_expected.to have_many :books }
   end
 
+
   describe '#generate_records' do
+    context '#generate_author_hashes' do
+      # let(:reviews) { RestClient.get "http://www.goodreads.com/review/list/#{user.uid}?key=#{ENV['GOODREADS_API_KEY']}&sort=author&per_page=200&shelf=read" }
+      # let(:reviews) { Hash.from_xml(reviews.to_s) }
+
+      it 'returns an array' do
+        p 'test test test'
+        reviews = RestClient.get "http://www.goodreads.com/review/list/#{user.uid}?key=#{ENV['GOODREADS_API_KEY']}&sort=author&per_page=200&shelf=read"
+        p reviews.class
+        data = user.generate_author_hashes(reviews)
+        expect(data).to be_a Array
+      end
+
+      it 'stores each author as a hash' do
+        expect(data).to all be_a Hash
+      end
+    end
+
     context '#get_author_single_page'
       let(:data) { user.get_author_single_page(1) }
 
@@ -38,14 +56,6 @@ RSpec.describe User, type: :model do
     let(:page4) { user.get_author_single_page(4) }
     let(:page5) { user.get_author_single_page(5) }
     let(:page6) { user.get_author_single_page(6) }
-
-    it 'returns an array' do
-      expect(data).to be_a Array
-    end
-
-    it 'stores each item as a hash' do
-      expect(data).to all be_a Hash
-    end
 
     it 'aggregates data from each page of a read shelf' do
       pages = [page1, page2, page3, page4, page5, page6]
