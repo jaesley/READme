@@ -1,4 +1,4 @@
-# [README](http://read-me.herokuapp.com)
+# [READme](http://read-me.herokuapp.com)
 ## mission
 
 Find me more books to buy.
@@ -19,8 +19,8 @@ You probably need more, too. You should try it.
 ## known issues
 
 * Organization and test structure need work.
-    * Move 'helper' methods to models where they belong.
-    * Add tests for all those methods!!
+    * ~~Move 'helper' methods to models where they belong.~~
+    * **Add tests for all those methods!!**
 
 * It's painfully slow.
     * Use Typhoeus to run API requests in parallel.
@@ -38,3 +38,4 @@ You probably need more, too. You should try it.
 * Add support for ordering works by author rather than by date.
 * Add ability for user to follow an author they're interested in but may not have read before.
 * Add support for tracking series info and recommending the next book in series, even if that book is previously released.
+0
