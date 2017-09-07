@@ -17,6 +17,18 @@ RSpec.describe User, type: :model do
       @author = user.generate_author_hash(review)
     end
 
+    context '#generate_follow' do
+      let(:author) { Author.create(@author) }
+      it 'is a valid instance of Follow' do
+        follow = user.generate_follow(author)
+        expect(follow).to be_valid
+      end
+
+      it 'saves the follow instance to the database' do
+        expect{user.generate_follow(author)}.to change(Follow, :count).from(0).to(1)
+      end
+    end
+
     context '#generate_author' do
       it 'is a valid instance of Author' do
         author = user.generate_author(@author)

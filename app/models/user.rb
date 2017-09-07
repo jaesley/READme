@@ -38,10 +38,17 @@ class User < ApplicationRecord
     # end
   end
 
+  def generate_follow(author)
+    if !authors.include? author
+      authors << author
+    end
+    Follow.find_by(user_id: id, author_id: author.id)
+  end
+
   def generate_author(author)
     Author.where(goodreads_id: author[:goodreads_id]).first_or_create.update_attributes(name: author[:name], link: author[:link])
     author = Author.find_by(goodreads_id: author[:goodreads_id])
-    # generate_follow(author)
+    generate_follow(author)
     author
   end
 
@@ -104,12 +111,6 @@ class User < ApplicationRecord
     end
 
 
-    def generate_follow(author)
-      if !@current_user.authors.include? author
-        @current_user.authors << author
-      end
-      author
-    end
 
 
 
