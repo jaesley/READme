@@ -9,21 +9,52 @@ RSpec.describe User, type: :model do
     it { is_expected.to have_many :books }
   end
 
-
   describe '#generate_records' do
+    before(:each) do
+      reviews = RestClient.get "http://www.goodreads.com/review/list/#{user.uid}?key=#{ENV['GOODREADS_API_KEY']}&sort=author&per_page=5&shelf=read"
+      @reviews = Hash.from_xml(reviews.to_s)
+      review = @reviews['GoodreadsResponse']['books']['book'][0]
+      @author = user.generate_author_hash(review)
+    end
+
+    context '#generate_author' do
+      it 'is a valid instance of Author' do
+        author = user.generate_author(@author)
+        expect(author).to be_valid
+      end
+
+      it 'saves the author instance to the database' do
+        expect{user.generate_author(@author)}.to change(Author, :count).from(0).to(1)
+      end
+    end
+
+    context '#generate_author_hash' do
+      it 'returns a hash' do
+        expect(@author).to be_a Hash
+      end
+
+      it 'has a name' do
+        expect(@author[:name]).to_not be nil
+      end
+
+      it 'has a goodreads id' do
+        expect(@author[:goodreads_id]).to_not be nil
+      end
+
+      it 'has a link to author page' do
+        expect(@author[:link]).to_not be nil
+      end
+    end
+
     context '#generate_author_hashes' do
 
       it 'returns an array' do
-        reviews = RestClient.get "http://www.goodreads.com/review/list/#{user.uid}?key=#{ENV['GOODREADS_API_KEY']}&sort=author&per_page=5&shelf=read"
-        reviews = Hash.from_xml(reviews.to_s)
-        data = user.generate_author_hashes(reviews)
+        data = user.generate_author_hashes(@reviews)
         expect(data).to be_a Array
       end
 
       it 'stores each author as a hash' do
-        reviews = RestClient.get "http://www.goodreads.com/review/list/#{user.uid}?key=#{ENV['GOODREADS_API_KEY']}&sort=author&per_page=5&shelf=read"
-        reviews = Hash.from_xml(reviews.to_s)
-        data = user.generate_author_hashes(reviews)
+        data = user.generate_author_hashes(@reviews)
         expect(data).to all be_a Hash
       end
     end

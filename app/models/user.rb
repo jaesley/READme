@@ -38,11 +38,24 @@ class User < ApplicationRecord
     # end
   end
 
+  def generate_author(author)
+    Author.where(goodreads_id: author[:goodreads_id]).first_or_create.update_attributes(name: author[:name], link: author[:link])
+    author = Author.find_by(goodreads_id: author[:goodreads_id])
+    # generate_follow(author)
+    author
+  end
+
+  def generate_author_hash(review)
+    name = review['authors']['author']['name']
+    link = review['authors']['author']['link']
+    goodreads_id = review['authors']['author']['id']
+    {name: name, goodreads_id: goodreads_id, link: link}
+  end
+
   def generate_author_hashes(body)
     author_hashes = []
     body['GoodreadsResponse']['books']['book'].each do |book|
-      # author = generate_author_hash(review)
-      author = {}
+      author = generate_author_hash(book)
       author_hashes << author
     end
     author_hashes
@@ -52,8 +65,7 @@ class User < ApplicationRecord
     reviews = RestClient.get "http://www.goodreads.com/review/list/#{uid}?key=#{ENV['GOODREADS_API_KEY']}&sort=author&per_page=200&shelf=read"
     reviews = Hash.from_xml(reviews.to_s)
     total = reviews['GoodreadsResponse']['books']['total'].to_i
-    # author_hashes = generate_author_hashes(reviews)
-    author_hashes = [{}, {}]
+    author_hashes = generate_author_hashes(reviews)
     {author_hashes: author_hashes, total: total}
   end
 
@@ -78,43 +90,12 @@ class User < ApplicationRecord
 
 
 
-  def generate_author_hash(review)
-    name = review['book']['authors']['author']['name']
-    link = review['book']['authors']['author']['link']
-    goodreads_id = review['book']['authors']['author']['id']
-    {name: name, goodreads_id: goodreads_id, link: link}
-  end
 
 
 
 
 
 
-  def create_authors
-    author_hashes = get_author_all_pages
-    pp author_hashes
-  end
-
-
-
-
-
-    def generate_authors
-      page = 1
-      body = generate_authors_page(page)
-      total = body['GoodreadsResponse']['reviews']['total'].to_i
-      while total > 200
-        page += 1
-        total -= 200
-        generate_authors_page(page)
-      end
-
-      @author_hashes.each do |author|
-        generate_author(author)
-      end
-
-      @current_user.authors
-    end
 
     def generate_authors_page(page)
       authors_request = RestClient.get "http://www.goodreads.com/review/list/#{@current_user.uid}?key=#{ENV['GOODREADS_API_KEY']}&v=2&sort=author&per_page=200&shelf=read"
@@ -122,10 +103,6 @@ class User < ApplicationRecord
       Hash.from_xml(authors_request)
     end
 
-    def generate_author(author)
-      Author.where(goodreads_id: author[:goodreads_id]).first_or_create.update_attributes(name: author[:name], link: author[:link])
-      generate_follow(Author.find_by(goodreads_id: author[:goodreads_id]))
-    end
 
     def generate_follow(author)
       if !@current_user.authors.include? author
