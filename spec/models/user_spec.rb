@@ -48,9 +48,8 @@ RSpec.describe User, type: :model do
     end
 
     it 'aggregates data from each page of a read shelf' do
-      total = 0
       pages = [page1, page2, page3, page4, page5, page6]
-      pages.each { |page| total += page[:author_hashes].length }
+      total = pages.reduce(0) { |sum, page| sum + page[:author_hashes].length }
       expect(data.length).to eq(total)
     end
   end
