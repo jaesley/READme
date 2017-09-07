@@ -40,6 +40,7 @@ gem 'dotenv'
 gem 'typhoeus'
 gem 'rest-client'
 
+gem 'simplecov'
 gem 'awesome_print'
 gem 'json'
 gem 'jquery-rails'
