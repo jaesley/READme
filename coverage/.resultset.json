@@ -50,26 +50,26 @@
         null,
         null,
         1,
-        28,
-        28,
-        28,
+        12,
+        12,
+        12,
         null,
-        28,
-        28,
+        12,
+        12,
         null,
         null,
         1,
-        3,
-        3,
-        3,
-        3,
+        1,
+        1,
+        1,
+        1,
         null,
-        3,
-        15,
-        15,
+        1,
+        5,
+        5,
         null,
         null,
-        3,
+        1,
         null,
         null,
         1,
@@ -192,48 +192,8 @@
       "/Users/apprentice/jae/READme/app/helpers/application_helper.rb": [
         1,
         null
-      ],
-      "/Users/apprentice/jae/READme/app/controllers/users_controller.rb": [
-        1,
-        1,
-        0,
-        0,
-        null,
-        0,
-        null,
-        null,
-        null
-      ],
-      "/Users/apprentice/jae/READme/app/controllers/application_controller.rb": [
-        1,
-        1,
-        null
-      ],
-      "/Users/apprentice/jae/READme/app/models/author.rb": [
-        1,
-        1,
-        1,
-        1,
-        null,
-        1,
-        null
-      ],
-      "/Users/apprentice/jae/READme/app/models/book.rb": [
-        1,
-        1,
-        1,
-        1,
-        null,
-        1,
-        null
-      ],
-      "/Users/apprentice/jae/READme/app/models/follow.rb": [
-        1,
-        1,
-        1,
-        null
       ]
     },
-    "timestamp": 1504743362
+    "timestamp": 1504743641
   }
 }
