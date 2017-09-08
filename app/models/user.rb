@@ -66,7 +66,7 @@ class User < ApplicationRecord
   def generate_authors_all_pages
     page_number = 1
     total_reviews = 0
-    request = Typhoeus::Request.new("http://www.goodreads.com/review/list/#{uid}?key=#{ENV['GOODREADS_API_KEY']}&sort=author&page=#{page_number}&per_page=1&shelf=read")
+    request = Typhoeus::Request.new("http://www.goodreads.com/review/list/#{uid}?key=#{ENV['GOODREADS_API_KEY']}&page=#{page_number}&per_page=1&shelf=read")
     request.on_complete do |response|
       response = Hash.from_xml(response.body)
       total_reviews = response['GoodreadsResponse']['books']['total'].to_i
@@ -74,6 +74,7 @@ class User < ApplicationRecord
     request.run
 
     if total_reviews != reviews_count
+      new_reviews = total_reviews - reviews_count.to_i
       update_attributes(reviews_count: total_reviews)
       page_count = (total_reviews / 200) + 1
 
@@ -81,7 +82,7 @@ class User < ApplicationRecord
 
       page_count.times do |x|
         page_number = x + 1
-        request = Typhoeus::Request.new("http://www.goodreads.com/review/list/#{uid}?key=#{ENV['GOODREADS_API_KEY']}&sort=author&page=#{page_number}&per_page=200&shelf=read")
+        request = Typhoeus::Request.new("http://www.goodreads.com/review/list/#{uid}?key=#{ENV['GOODREADS_API_KEY']}&page=#{page_number}&per_page=200&shelf=read")
         request.on_complete do |response|
           response = Hash.from_xml(response.body)
           generate_authors(response)
