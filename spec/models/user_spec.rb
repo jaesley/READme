@@ -69,15 +69,12 @@ RSpec.describe User, type: :model do
       end
     end
 
-    context '#get_author_single_page' do
-      let(:data) { user.get_author_single_page(1) }
-
-      it 'returns a single page from the read shelf as a hash' do
-        expect(data).to be_a Hash
-      end
+    context '#generate_authors_single_page' do
+      let(:total_reviews) { user.generate_authors_single_page(1) }
 
       it 'returns the total number of reviews as an integer' do
-        expect(data[:total]).to be_a Integer
+        total = @page['GoodreadsResponse']['books']['total'].to_i
+        expect(total_reviews).to eq total
       end
     end
 
