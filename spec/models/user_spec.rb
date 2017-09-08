@@ -78,14 +78,14 @@ RSpec.describe User, type: :model do
       end
     end
 
-    context '#get_author_all_pages' do
-      let(:data) { user.get_author_all_pages }
-      let(:page1) { user.get_author_single_page(1) }
-      let(:page2) { user.get_author_single_page(2) }
-      let(:page3) { user.get_author_single_page(3) }
-      let(:page4) { user.get_author_single_page(4) }
-      let(:page5) { user.get_author_single_page(5) }
-      let(:page6) { user.get_author_single_page(6) }
+    context '#generate_authors_all_pages' do
+      let(:data) { user.generate_authors_all_pages }
+      let(:page1) { user.generate_authors_single_page(1) }
+      let(:page2) { user.generate_authors_single_page(2) }
+      let(:page3) { user.generate_authors_single_page(3) }
+      let(:page4) { user.generate_authors_single_page(4) }
+      let(:page5) { user.generate_authors_single_page(5) }
+      let(:page6) { user.generate_authors_single_page(6) }
 
       it 'aggregates data from each page of a read shelf' do
         pages = [page1, page2, page3, page4, page5, page6]
