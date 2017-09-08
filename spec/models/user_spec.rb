@@ -82,13 +82,14 @@ RSpec.describe User, type: :model do
       it 'aggregates data from each page of a read shelf' do
         user.generate_authors_single_page(1)
         user.generate_authors_single_page(2)
+        user.generate_authors_single_page(3)
         user.generate_authors_single_page(4)
         user.generate_authors_single_page(5)
         user.generate_authors_single_page(6)
         total = Author.count
         Author.destroy_all
-        
-        expect{user.generate_authors_all_pages}.to change(Author, :count).from(0).to(total)
+
+        expect{user.generate_authors_all_pages}.to change(Author, :count).by(total)
       end
     end
   end
