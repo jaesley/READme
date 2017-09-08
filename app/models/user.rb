@@ -57,7 +57,7 @@ class User < ApplicationRecord
   end
 
   def generate_authors_single_page(page_number)
-    page = RestClient.get "http://www.goodreads.com/review/list/#{uid}?key=#{ENV['GOODREADS_API_KEY']}&sort=author&per_page=200&shelf=read"
+    page = RestClient.get "http://www.goodreads.com/review/list/#{uid}?key=#{ENV['GOODREADS_API_KEY']}&sort=author&page=#{page_number}&per_page=200&shelf=read"
     page = Hash.from_xml(page.to_s)
     generate_authors(page)
     page['GoodreadsResponse']['books']['total'].to_i
