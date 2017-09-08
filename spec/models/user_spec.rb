@@ -86,8 +86,7 @@ RSpec.describe User, type: :model do
         user.generate_authors_single_page(5)
         user.generate_authors_single_page(6)
         total = Author.count
-        page = RestClient.get "http://www.goodreads.com/review/list/#{user.uid}?key=#{ENV['GOODREADS_API_KEY']}&sort=author&per_page=5&shelf=read"
-        page = Hash.from_xml(page.to_s)
+        Author.destroy_all
         
         expect{user.generate_authors_all_pages}.to change(Author, :count).from(0).to(total)
       end
