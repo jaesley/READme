@@ -28,6 +28,63 @@ class User < ApplicationRecord
 
   # RECORD GENERATION
 
+  def generate_follow(author)
+    if !authors.include? author
+      authors << author
+    end
+    Follow.find_by(user_id: id, author_id: author.id)
+  end
+
+  def generate_author(author)
+    Author.where(goodreads_id: author[:goodreads_id]).first_or_create.update_attributes(name: author[:name], link: author[:link])
+    author = Author.find_by(goodreads_id: author[:goodreads_id])
+    generate_follow(author)
+    author
+  end
+
+  def generate_author_hash(review)
+    name = review['authors']['author']['name']
+    link = review['authors']['author']['link']
+    goodreads_id = review['authors']['author']['id']
+    {name: name, goodreads_id: goodreads_id, link: link}
+  end
+
+  def generate_authors(page)
+    page['GoodreadsResponse']['books']['book'].each do |book|
+      author = generate_author_hash(book)
+      generate_author(author)
+    end
+  end
+
+  def generate_authors_single_page(page_number)
+    page = RestClient.get "http://www.goodreads.com/review/list/#{uid}?key=#{ENV['GOODREADS_API_KEY']}&sort=author&per_page=200&shelf=read"
+    page = Hash.from_xml(page.to_s)
+    generate_authors(page)
+    page['GoodreadsResponse']['books']['total'].to_i
+  end
+
+  def generate_authors_all_pages
+    page_number = 1
+    total_reviews = generate_authors_single_page(page_number)
+    pages = total_reviews / 200
+
+    pages.times do |x|
+      generate_authors_single_page(x+2)
+    end
+  end
+
+
+
+
+
+
+
+
+
+
+
+
+
   def generate_records(current_user)
     @current_user = User.last
     create_authors
@@ -38,95 +95,11 @@ class User < ApplicationRecord
     # end
   end
 
-  # private
-
-  def create_authors
-    author_hashes = get_author_all_pages
-    pp author_hashes
-  end
-
-  def get_author_single_page(page_number)
-    reviews = RestClient.get "http://www.goodreads.com/review/list/#{uid}?key=#{ENV['GOODREADS_API_KEY']}&sort=author&per_page=200&shelf=read"
-    reviews = Hash.from_xml(reviews.to_s)
-    total = reviews['GoodreadsResponse']['books']['total'].to_i
-    # author_hashes = generate_author_hashes(reviews)
-    author_hashes = [{}, {}]
-    {author_hashes: author_hashes, total: total}
-  end
-
-  def get_author_all_pages
-    page_number = 1
-    page_hash = get_author_single_page(page_number)
-    author_hashes = page_hash[:author_hashes]
-    pages = page_hash[:total] / 200
-
-    pages.times do |x|
-      page_hash = get_author_single_page(x+2)
-      author_hashes += page_hash[:author_hashes]
-    end
-
-    author_hashes
-  end
-
-  def generate_author_hashes(body)
-    body['GoodreadsResponse']['reviews']['review'].each do |review|
-      author = generate_author_hash(review)
-      author_hashes << author
-    end
-    author_hashes
-  end
-
-  def generate_author_hash(review)
-    name = review['book']['authors']['author']['name']
-    link = review['book']['authors']['author']['link']
-    goodreads_id = review['book']['authors']['author']['id']
-    {name: name, goodreads_id: goodreads_id, link: link}
-  end
 
 
 
 
 
-
-
-
-
-
-
-    def generate_authors
-      page = 1
-      body = generate_authors_page(page)
-      total = body['GoodreadsResponse']['reviews']['total'].to_i
-      while total > 200
-        page += 1
-        total -= 200
-        generate_authors_page(page)
-      end
-
-      @author_hashes.each do |author|
-        generate_author(author)
-      end
-
-      @current_user.authors
-    end
-
-    def generate_authors_page(page)
-      authors_request = RestClient.get "http://www.goodreads.com/review/list/#{@current_user.uid}?key=#{ENV['GOODREADS_API_KEY']}&v=2&sort=author&per_page=200&shelf=read"
-      generate_author_hashes(Hash.from_xml(authors_request))
-      Hash.from_xml(authors_request)
-    end
-
-    def generate_author(author)
-      Author.where(goodreads_id: author[:goodreads_id]).first_or_create.update_attributes(name: author[:name], link: author[:link])
-      generate_follow(Author.find_by(goodreads_id: author[:goodreads_id]))
-    end
-
-    def generate_follow(author)
-      if !@current_user.authors.include? author
-        @current_user.authors << author
-      end
-      author
-    end
 
 
 

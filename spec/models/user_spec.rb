@@ -10,47 +10,86 @@ RSpec.describe User, type: :model do
   end
 
   describe '#generate_records' do
-    context '#get_author_single_page'
-      let(:data) { user.get_author_single_page(1) }
+    before(:each) do
+      page = RestClient.get "http://www.goodreads.com/review/list/#{user.uid}?key=#{ENV['GOODREADS_API_KEY']}&sort=author&per_page=5&shelf=read"
+      @page = Hash.from_xml(page.to_s)
+      @books = @page['GoodreadsResponse']['books']['book']
+      review = @page['GoodreadsResponse']['books']['book'][0]
+      @author = user.generate_author_hash(review)
+    end
 
-      it 'returns a single page from the read shelf as a hash' do
-        expect(data).to be_a Hash
+    context '#generate_follow' do
+      let(:author) { Author.create(@author) }
+
+      it 'is a valid instance of Follow' do
+        follow = user.generate_follow(author)
+        expect(follow).to be_valid
       end
 
-      it 'includes an array of authors' do
-        expect(data[:author_hashes]).to be_a Array
+      it 'saves the follow instance to the database' do
+        expect{user.generate_follow(author)}.to change(Follow, :count).from(0).to(1)
+      end
+    end
+
+    context '#generate_author_hash' do
+      it 'returns a hash' do
+        expect(@author).to be_a Hash
       end
 
-      it 'stores each author as a hash' do
-        expect(data[:author_hashes]).to all be_a Hash
+      it 'has a name' do
+        expect(@author[:name]).to_not be nil
       end
+
+      it 'has a goodreads id' do
+        expect(@author[:goodreads_id]).to_not be nil
+      end
+
+      it 'has a link to author page' do
+        expect(@author[:link]).to_not be nil
+      end
+    end
+
+    context '#generate_author' do
+      it 'is a valid instance of Author' do
+        author = user.generate_author(@author)
+        expect(author).to be_valid
+      end
+
+      it 'saves the author instance to the database' do
+        expect{user.generate_author(@author)}.to change(Author, :count).from(0).to(1)
+      end
+    end
+
+    context '#generate_authors' do
+      it 'saves multiple authors to the database' do
+        authors = []
+        @books.each { |book| authors << user.generate_author_hash(book) }
+        authors.uniq!
+        expect{user.generate_authors(@page)}.to change(Author, :count).from(0).to(authors.count)
+      end
+    end
+
+    context '#generate_authors_single_page' do
+      let(:total_reviews) { user.generate_authors_single_page(1) }
 
       it 'returns the total number of reviews as an integer' do
-        expect(data[:total]).to be_a Integer
+        total = @page['GoodreadsResponse']['books']['total'].to_i
+        expect(total_reviews).to eq total
       end
-  end
-
-  context '#get_author_all_pages' do
-    let(:data) { user.get_author_all_pages }
-    let(:page1) { user.get_author_single_page(1) }
-    let(:page2) { user.get_author_single_page(2) }
-    let(:page3) { user.get_author_single_page(3) }
-    let(:page4) { user.get_author_single_page(4) }
-    let(:page5) { user.get_author_single_page(5) }
-    let(:page6) { user.get_author_single_page(6) }
-
-    it 'returns an array' do
-      expect(data).to be_a Array
     end
 
-    it 'stores each item as a hash' do
-      expect(data).to all be_a Hash
-    end
-
-    it 'aggregates data from each page of a read shelf' do
-      pages = [page1, page2, page3, page4, page5, page6]
-      total = pages.reduce(0) { |sum, page| sum + page[:author_hashes].length }
-      expect(data.length).to eq(total)
+    context '#generate_authors_all_pages' do
+      it 'aggregates data from each page of a read shelf' do
+        user.generate_authors_single_page(1)
+        user.generate_authors_single_page(2)
+        user.generate_authors_single_page(4)
+        user.generate_authors_single_page(5)
+        user.generate_authors_single_page(6)
+        total = Author.count
+        Author.destroy_all
+        
+        expect{user.generate_authors_all_pages}.to change(Author, :count).from(0).to(total)
+      end
     end
   end
 end
