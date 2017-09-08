@@ -11,14 +11,16 @@ RSpec.describe User, type: :model do
 
   describe '#generate_records' do
     before(:each) do
-      reviews = RestClient.get "http://www.goodreads.com/review/list/#{user.uid}?key=#{ENV['GOODREADS_API_KEY']}&sort=author&per_page=5&shelf=read"
-      @reviews = Hash.from_xml(reviews.to_s)
-      review = @reviews['GoodreadsResponse']['books']['book'][0]
+      page = RestClient.get "http://www.goodreads.com/review/list/#{user.uid}?key=#{ENV['GOODREADS_API_KEY']}&sort=author&per_page=5&shelf=read"
+      @page = Hash.from_xml(page.to_s)
+      @books = @page['GoodreadsResponse']['books']['book']
+      review = @page['GoodreadsResponse']['books']['book'][0]
       @author = user.generate_author_hash(review)
     end
 
     context '#generate_follow' do
       let(:author) { Author.create(@author) }
+
       it 'is a valid instance of Follow' do
         follow = user.generate_follow(author)
         expect(follow).to be_valid
@@ -26,17 +28,6 @@ RSpec.describe User, type: :model do
 
       it 'saves the follow instance to the database' do
         expect{user.generate_follow(author)}.to change(Follow, :count).from(0).to(1)
-      end
-    end
-
-    context '#generate_author' do
-      it 'is a valid instance of Author' do
-        author = user.generate_author(@author)
-        expect(author).to be_valid
-      end
-
-      it 'saves the author instance to the database' do
-        expect{user.generate_author(@author)}.to change(Author, :count).from(0).to(1)
       end
     end
 
@@ -58,16 +49,23 @@ RSpec.describe User, type: :model do
       end
     end
 
-    context '#generate_author_hashes' do
-
-      it 'returns an array' do
-        data = user.generate_author_hashes(@reviews)
-        expect(data).to be_a Array
+    context '#generate_author' do
+      it 'is a valid instance of Author' do
+        author = user.generate_author(@author)
+        expect(author).to be_valid
       end
 
-      it 'stores each author as a hash' do
-        data = user.generate_author_hashes(@reviews)
-        expect(data).to all be_a Hash
+      it 'saves the author instance to the database' do
+        expect{user.generate_author(@author)}.to change(Author, :count).from(0).to(1)
+      end
+    end
+
+    context '#generate_authors' do
+      it 'saves multiple authors to the database' do
+        authors = []
+        @books.each { |book| authors << user.generate_author_hash(book) }
+        authors.uniq!
+        expect{user.generate_authors(@page)}.to change(Author, :count).from(0).to(authors.count)
       end
     end
 

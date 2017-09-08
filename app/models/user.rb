@@ -28,16 +28,6 @@ class User < ApplicationRecord
 
   # RECORD GENERATION
 
-  def generate_records(current_user)
-    @current_user = User.last
-    create_authors
-    # @author_hashes = []
-    # @authors = generate_authors
-    # @authors.each do |author|
-    #   generate_books(author)
-    # end
-  end
-
   def generate_follow(author)
     if !authors.include? author
       authors << author
@@ -59,34 +49,29 @@ class User < ApplicationRecord
     {name: name, goodreads_id: goodreads_id, link: link}
   end
 
-  def generate_author_hashes(body)
-    author_hashes = []
-    body['GoodreadsResponse']['books']['book'].each do |book|
+  def generate_authors(page)
+    page['GoodreadsResponse']['books']['book'].each do |book|
       author = generate_author_hash(book)
-      author_hashes << author
+      generate_author(author)
     end
-    author_hashes
   end
 
-  def get_author_single_page(page_number)
-    reviews = RestClient.get "http://www.goodreads.com/review/list/#{uid}?key=#{ENV['GOODREADS_API_KEY']}&sort=author&per_page=200&shelf=read"
-    reviews = Hash.from_xml(reviews.to_s)
-    total = reviews['GoodreadsResponse']['books']['total'].to_i
-    author_hashes = generate_author_hashes(reviews)
-    {author_hashes: author_hashes, total: total}
+  def generate_authors_single_page(page_number)
+    page = RestClient.get "http://www.goodreads.com/review/list/#{uid}?key=#{ENV['GOODREADS_API_KEY']}&sort=author&per_page=200&shelf=read"
+    page = Hash.from_xml(page.to_s)
+    total_reviews = page['GoodreadsResponse']['books']['total'].to_i
+    generate_authors(page)
+    total_reviews
   end
 
-  def get_author_all_pages
+  def generate_authors_all_pages
     page_number = 1
-    page_hash = get_author_single_page(page_number)
-    author_hashes = page_hash[:author_hashes]
-    pages = page_hash[:total] / 200
+    total_reviews = generate_author_single_page(page_number)
+    pages = total_reviews / 200
 
     pages.times do |x|
-      page_hash = get_author_single_page(x+2)
-      author_hashes += page_hash[:author_hashes]
+      generate_author_single_page(x+2)
     end
-    author_hashes
   end
 
 
@@ -101,14 +86,19 @@ class User < ApplicationRecord
 
 
 
+  def generate_records(current_user)
+    @current_user = User.last
+    create_authors
+    # @author_hashes = []
+    # @authors = generate_authors
+    # @authors.each do |author|
+    #   generate_books(author)
+    # end
+  end
 
 
 
-    def generate_authors_page(page)
-      authors_request = RestClient.get "http://www.goodreads.com/review/list/#{@current_user.uid}?key=#{ENV['GOODREADS_API_KEY']}&v=2&sort=author&per_page=200&shelf=read"
-      generate_author_hashes(Hash.from_xml(authors_request))
-      Hash.from_xml(authors_request)
-    end
+
 
 
 
