@@ -69,7 +69,7 @@ class User < ApplicationRecord
     pages = total_reviews / 200
 
     pages.times do |x|
-      generate_author_single_page(x+2)
+      generate_authors_single_page(x+2)
     end
   end
 
