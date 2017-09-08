@@ -65,7 +65,7 @@ class User < ApplicationRecord
 
   def generate_authors_all_pages
     page_number = 1
-    total_reviews = generate_author_single_page(page_number)
+    total_reviews = generate_authors_single_page(page_number)
     pages = total_reviews / 200
 
     pages.times do |x|
