@@ -89,7 +89,6 @@ class User < ApplicationRecord
         end
         hydra.queue request
       end
-      p "=" * 1000
       hydra.run
     end
   end
