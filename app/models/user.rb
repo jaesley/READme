@@ -66,12 +66,12 @@ class User < ApplicationRecord
   def generate_authors_all_pages
     page_number = 1
     total_reviews = 0
-    request = Typhoeus::Request.new("http://www.goodreads.com/review/list/#{uid}?key=#{ENV['GOODREADS_API_KEY']}&page=#{page_number}&per_page=1&shelf=read")
-    request.on_complete do |response|
+    first_request = Typhoeus::Request.new("http://www.goodreads.com/review/list/#{uid}?key=#{ENV['GOODREADS_API_KEY']}&page=#{page_number}&per_page=1&shelf=read")
+    first_request.on_complete do |response|
       response = Hash.from_xml(response.body)
       total_reviews = response['GoodreadsResponse']['books']['total'].to_i
     end
-    request.run
+    first_request.run
 
     if total_reviews != reviews_count
       new_reviews = total_reviews - reviews_count.to_i
@@ -89,6 +89,7 @@ class User < ApplicationRecord
         end
         hydra.queue request
       end
+      p "=" * 1000
       hydra.run
     end
   end
