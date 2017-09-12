@@ -28,6 +28,20 @@ class User < ApplicationRecord
 
   # RECORD GENERATION
 
+  def generate_records
+    generate_authors_all_pages
+
+    pp authors
+
+    authors.each do |author|
+      if author.works_count == nil
+        # Author will generate pages
+        # page_number = 1
+        # author.generate_books_page(page_number)
+      end
+    end
+  end
+
   def generate_follow(author)
     if !authors.include? author
       authors << author
@@ -45,7 +59,6 @@ class User < ApplicationRecord
   def generate_author_hash(review)
     name = review['authors']['author']['name']
     link = review['authors']['author']['link']
-    works_count = review['authors']['author'].keys
     goodreads_id = review['authors']['author']['id']
     {name: name, goodreads_id: goodreads_id, link: link}
   end
@@ -95,32 +108,6 @@ class User < ApplicationRecord
       end
 
       hydra.run
-    end
-  end
-
-
-
-
-
-
-
-
-
-
-
-
-
-  def generate_records
-    generate_authors_all_pages
-
-    pp authors
-
-    authors.each do |author|
-      if author.works_count == nil
-        # Author will generate pages
-        # page_number = 1
-        # author.generate_books_page(page_number)
-      end
     end
   end
 end

@@ -70,7 +70,11 @@ RSpec.describe User, type: :model do
     end
 
     context '#generate_authors_all_pages' do
-      
+
     end
+  end
+
+  context '#generate_records' do
+
   end
 end
