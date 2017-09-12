@@ -45,6 +45,7 @@ class User < ApplicationRecord
   def generate_author_hash(review)
     name = review['authors']['author']['name']
     link = review['authors']['author']['link']
+    works_count = review['authors']['author'].keys
     goodreads_id = review['authors']['author']['id']
     {name: name, goodreads_id: goodreads_id, link: link}
   end
@@ -56,39 +57,43 @@ class User < ApplicationRecord
     end
   end
 
-  def generate_authors_single_page(page_number)
-    page = RestClient.get "http://www.goodreads.com/review/list/#{uid}?key=#{ENV['GOODREADS_API_KEY']}&sort=author&page=#{page_number}&per_page=200&shelf=read"
-    page = Hash.from_xml(page.to_s)
-    generate_authors(page)
-    page['GoodreadsResponse']['books']['total'].to_i
-  end
-
   def generate_authors_all_pages
     page_number = 1
     total_reviews = 0
+    hydra = Typhoeus::Hydra.new(max_concurrency: 200)
+
     first_request = Typhoeus::Request.new("http://www.goodreads.com/review/list/#{uid}?key=#{ENV['GOODREADS_API_KEY']}&page=#{page_number}&per_page=1&shelf=read")
     first_request.on_complete do |response|
       response = Hash.from_xml(response.body)
       total_reviews = response['GoodreadsResponse']['books']['total'].to_i
     end
+
     first_request.run
 
-    if total_reviews != reviews_count
+    if total_reviews > reviews_count
       new_reviews = total_reviews - reviews_count.to_i
       update_attributes(reviews_count: total_reviews)
-      page_count = (total_reviews / 200) + 1
 
-      hydra = Typhoeus::Hydra.new(max_concurrency: 200)
-
-      page_count.times do |x|
-        page_number = x + 1
-        request = Typhoeus::Request.new("http://www.goodreads.com/review/list/#{uid}?key=#{ENV['GOODREADS_API_KEY']}&page=#{page_number}&per_page=200&shelf=read")
+      if new_reviews < 200
+        request = Typhoeus::Request.new("http://www.goodreads.com/review/list/#{uid}?key=#{ENV['GOODREADS_API_KEY']}&page=#{page_number}&per_page=#{new_reviews}&shelf=read")
         request.on_complete do |response|
           response = Hash.from_xml(response.body)
           generate_authors(response)
         end
         hydra.queue request
+      else
+        page_count = (new_reviews / 200) + 1
+        page_count.times do |x|
+          page_number = x + 1
+          request = Typhoeus::Request.new("http://www.goodreads.com/review/list/#{uid}?key=#{ENV['GOODREADS_API_KEY']}&page=#{page_number}&per_page=200&shelf=read")
+          request.on_complete do |response|
+            response = Hash.from_xml(response.body)
+            generate_authors(response)
+          end
+          hydra.queue request
+        end
       end
+
       hydra.run
     end
   end
@@ -105,70 +110,17 @@ class User < ApplicationRecord
 
 
 
-  def generate_records(current_user)
-    @current_user = User.last
-    create_authors
-    # @author_hashes = []
-    # @authors = generate_authors
-    # @authors.each do |author|
-    #   generate_books(author)
-    # end
+  def generate_records
+    generate_authors_all_pages
+
+    pp authors
+
+    authors.each do |author|
+      if author.works_count == nil
+        # Author will generate pages
+        # page_number = 1
+        # author.generate_books_page(page_number)
+      end
+    end
   end
-
-
-
-
-
-
-
-
-
-    def generate_books(author)
-      page = 1
-      body = generate_books_page(author, page)
-      total = body['GoodreadsResponse']['author']['books']['total'].to_i
-      while total > 200
-        page += 1
-        total -= 200
-        generate_books_page(author, page)
-      end
-    end
-
-    def generate_books_page(author, page)
-      books_request = RestClient.get "http://www.goodreads.com/author/list/#{author.goodreads_id}?key=#{ENV['GOODREADS_API_KEY']}&v=2&per_page=200&page=#{page}"
-      generate_book_hashes(author.id, Hash.from_xml(books_request))
-      Hash.from_xml(books_request)
-    end
-
-    def generate_book_hashes(author_id, books)
-      books['GoodreadsResponse']['author']['books']['book'].each do |book|
-        begin
-          book = generate_book_hash(author_id, book)
-          generate_book(book)
-        rescue
-          next
-        end
-      end
-    end
-
-    def generate_book_hash(author_id, book)
-      pub_date = "#{book['publication_year']}-#{book['publication_month']}-#{book['publication_day']}"
-      if Date.parse(pub_date) >= Date.today
-        title = book['title_without_series']
-        goodreads_id = book['id']
-        link = book['link']
-
-        isbn = get_isbn(book)
-
-        {title: title, goodreads_id: goodreads_id, isbn: isbn, author_id: author_id, link: link, publication_date: pub_date}
-      end
-    end
-
-    def get_isbn(book)
-      book['isbn'] ? book['isbn'] : book['isbn10']
-    end
-
-    def generate_book(book)
-      Book.where(goodreads_id: book[:goodreads_id]).first_or_create.update_attributes(title: book[:title], isbn: book[:isbn], publication_date: book[:publication_date], author_id: book[:author_id], link: book[:link])
-    end
 end
