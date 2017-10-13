@@ -1,4 +1,4 @@
-namespace :db do
+namespace :books do
   desc "Clear outdated works from the database each day"
   task :update => :environment do
     books = Books.all.select { |book| book.publication_date  < Date.today }
