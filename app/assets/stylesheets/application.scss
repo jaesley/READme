@@ -1,8 +1,6 @@
-@import 'bourbon';
-@import 'neat';
-// @import 'base/base';
-@import 'hero';
-@import 'nav';
+@import "_variables";
+@import "bootstrap";
+@import "_bootswatch";
 
 /*
  * This is a manifest file that'll be compiled into application.css, which will include all the files
@@ -18,44 +16,3 @@
  *
  *= require_self
  */
-
-body {
-  font-family: sans-serif;
-  color: transparentize(#000, 0.25);
-  margin: 0 auto;
-}
-
-a {
-  color: transparentize(#111, 0.25);
-}
-
-.releases {
-  padding: 5px;
-  width: 80%;
-  margin: 0 auto;
-}
-
-.release-date {
-  padding: 5px;
-  width: 80%;
-  margin: 0 auto;
-}
-
-.date {
-  border-radius: 5px;
-  padding: 5px;
-  background-color: lightblue;
-  font-size: x-large;
-}
-
-.book {
-  padding: 5px;
-  width: 90%;
-  margin: 0 auto;
-}
-
-.title {
-  padding: 5px;
-  font-style: italic;
-  font-size: larger;
-}
