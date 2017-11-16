@@ -31,8 +31,6 @@ class User < ApplicationRecord
   def generate_records
     generate_authors_all_pages
 
-    pp authors
-
     authors.each do |author|
       if author.works_count == nil
         # Author will generate pages
@@ -83,8 +81,8 @@ class User < ApplicationRecord
 
     first_request.run
 
-    if total_reviews > reviews_count
-      new_reviews = total_reviews - reviews_count.to_i
+    if total_reviews.to_s.to_i > reviews_count.to_s.to_i
+      new_reviews = total_reviews.to_s.to_i - reviews_count.to_s.to_i
       update_attributes(reviews_count: total_reviews)
 
       if new_reviews < 200
