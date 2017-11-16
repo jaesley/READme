@@ -1,18 +1,23 @@
+<% current_user = User.first %>
+
 <% publication_dates = [] %>
 <% current_user.books.each { |book| publication_dates << book.publication_date } %>
 <% publication_dates = publication_dates.uniq.sort %>
 
-<div class='releases'>
-  <% publication_dates.each do |date| %>
-    <div class='release-date'>
-      <div class='date'><%= date.strftime('%B %e, %Y')%></div>
-      <div class='books'>
+<div class="card-group col-lg-4 offset-lg-4">
+  <div class="card text-white bg-primary">
+    <% publication_dates.each do |date| %>
+    <div class="card-body">
+      <h4 class="card-title text-white"><%= date.strftime('%B %e, %Y')%></h4>
+
+      <ul class="list-group list-group-flush">
         <% books = current_user.books.select { |book| book.publication_date == date } %>
         <% books = books.sort_by { |book| book.author.name.split(' ').last } %>
         <% books.each do |book| %>
           <%= render partial: 'books/show', locals: { book: book } %>
         <% end %>
-      </div>
-      </div>
-  <% end %>
+      </ul>
+    </div>
+    <% end %>
+  </div>
 </div>

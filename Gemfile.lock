@@ -58,6 +58,8 @@ GEM
       minitest (~> 5.1)
       tzinfo (~> 1.1)
     arel (8.0.0)
+    autoprefixer-rails (7.1.6)
+      execjs
     awesome_print (1.8.0)
     bcrypt (3.1.11)
     bcrypt (3.1.11-x86-mingw32)
@@ -66,6 +68,11 @@ GEM
       bourbon (~> 5.0.0.beta.7)
       sass (~> 3.4)
       thor (~> 0.19)
+    bootstrap (4.0.0.beta)
+      autoprefixer-rails (>= 6.0.3)
+      popper_js (~> 1.11.1)
+      sass (>= 3.4.19)
+    bootswatch (4.0.0.beta2.1)
     bourbon (5.0.0.beta.8)
       sass (~> 3.4)
       thor (~> 0.19)
@@ -147,6 +154,7 @@ GEM
     orm_adapter (0.5.0)
     pg (0.21.0)
     pg (0.21.0-x86-mingw32)
+    popper_js (1.11.1)
     puma (3.10.0)
     rack (2.0.3)
     rack-test (0.6.3)
@@ -276,6 +284,8 @@ PLATFORMS
 DEPENDENCIES
   awesome_print
   bitters
+  bootstrap (~> 4.0.0.alpha6)
+  bootswatch
   bourbon
   byebug
   coffee-rails (~> 4.2)
@@ -309,4 +319,4 @@ DEPENDENCIES
   web-console (>= 3.3.0)
 
 BUNDLED WITH
-   1.15.4
+   1.16.0

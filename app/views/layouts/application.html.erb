@@ -7,10 +7,44 @@
     <%= stylesheet_link_tag    'application', media: 'all' %>
     <%= javascript_include_tag 'application' %>
   </head>
-
+  
   <body>
-    <%= render 'shared/nav' %>
-    <%= render 'shared/hero' %>
-    <%= yield %>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-2 offset-sm-4">
+          <h1>READ</h1>
+        </div>
+
+        <div class="col-sm-2 text-right align-self-center">
+          <h5>
+            <% if user_signed_in? %>
+              <%= link_to current_user.user_name, root_path %>
+            <% else %>
+              <%= link_to 'sign up', new_user_registration_path %>
+            <% end %>
+          </h1>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-2 offset-sm-4">
+          <h1 class="text-muted">me</h1>
+        </div>
+
+        <div class="col-sm-2 text-right align-self-center">
+          <h5>
+            <% if user_signed_in? %>
+              <%= link_to 'log out', destroy_user_session_path, method: :delete %>
+            <% else %>
+              <%= link_to 'log in', new_user_session_path %>
+            <% end %>
+          </h1>
+        </div>
+      </div>
+
+      <div class="row">
+        <%= yield %>
+      </div>
+    </div>
   </body>
 </html>
