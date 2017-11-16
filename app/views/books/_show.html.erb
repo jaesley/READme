@@ -1,4 +1,4 @@
-<div class='book'>
-  <div class='title'><%= link_to book.title, book.link %></div>
-  <div class='author'><%= link_to book.author.name, book.author.link %></div>
+<div class="list-group-item">
+  <p><%= link_to book.title, book.link %></p>
+  <footer class="blockquote-footer"><%= link_to book.author.name, book.author.link %></footer>
 </div>
